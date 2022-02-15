@@ -2,6 +2,10 @@ package main
 
 import "fmt"
 
+func replaceAtIndex(s string, i int, r string) string {
+	return s[:i] + r + s[i+1:]
+}
+
 type SingleChord struct {
 	string int    // 0 = G, 1 = C, 2 = E, 3 = A
 	fret   int    // 0-based number of fret space
@@ -13,33 +17,37 @@ type Chord struct {
 	singleChords []SingleChord
 }
 
-func replaceAtIndex(s string, i int, r string) string {
-	return s[:i] + r + s[i+1:]
+type fretboardMatrix [9]string
+
+var blankFretboard fretboardMatrix = fretboardMatrix{
+	"+==+==+==+",
+	"|  |  |  |",
+	"+--+--+--+",
+	"|  |  |  |",
+	"+--+--+--+",
+	"|  |  |  |",
+	"+--+--+--+",
+	"|  |  |  |",
+	"+--+--+--+",
 }
 
-func printFretboard(c Chord, printKey bool) {
+type Fretboard struct {
+	fretboard fretboardMatrix
+}
 
-	var fretboard [9]string
-	fretboard[0] = "+==+==+==+"
-	fretboard[1] = "|  |  |  |"
-	fretboard[2] = "+--+--+--+"
-	fretboard[3] = "|  |  |  |"
-	fretboard[4] = "+--+--+--+"
-	fretboard[5] = "|  |  |  |"
-	fretboard[6] = "+--+--+--+"
-	fretboard[7] = "|  |  |  |"
-	fretboard[8] = "+--+--+--+"
-
-	// indicate finger(s) on string
+// f must not be a pointer to Fretboard as we don't modify the underlying matrix so that we get a blank board for every print
+func (f Fretboard) printFingers(c Chord, printKey bool) {
+	// indicate finger(s) on string(s) in matrix
 	for _, sc := range c.singleChords {
 		stringPos := sc.string * 3
 		fretPos := sc.fret*2 + 1
-		fretboard[fretPos] = replaceAtIndex(fretboard[fretPos], stringPos, sc.finger)
+		f.fretboard[fretPos] = replaceAtIndex(f.fretboard[fretPos], stringPos, sc.finger)
 	}
 
+	// print board matrix
 	fmt.Println(c.name)
-	for i := 0; i < len(fretboard); i++ {
-		fmt.Println(fretboard[i])
+	for i := 0; i < len(f.fretboard); i++ {
+		fmt.Println(f.fretboard[i])
 	}
 	if printKey {
 		fmt.Println("1 = index finger, 2 = middle finger, 3 = ring finger, 4 = pinky")
@@ -53,8 +61,9 @@ func main() {
 	F := Chord{"F", []SingleChord{{2, 0, "1"}, {0, 1, "2"}}}
 	G := Chord{"G", []SingleChord{{1, 1, "1"}, {3, 1, "2"}, {2, 2, "3"}}}
 
-	printFretboard(C, true)
-	printFretboard(Am, false)
-	printFretboard(F, false)
-	printFretboard(G, false)
+	f := Fretboard{blankFretboard}
+	f.printFingers(C, true)
+	f.printFingers(Am, false)
+	f.printFingers(F, false)
+	f.printFingers(G, false)
 }
