@@ -1,5 +1,9 @@
 # uke
 
+Print basic Ukelele chords.
+
+**This is work in progress!**
+
 ``` test
 $ go test
 ```
@@ -11,7 +15,3 @@ $ go run uke.go
 ``` compile
 $ go build
 ```
-
-# to do
-
-- use pointers in params

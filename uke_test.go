@@ -38,14 +38,14 @@ var fretboardBm []string = []string{
 }
 
 func TestC(t *testing.T) {
-	testChord(t, C, fretboardC)
+	testChord(t, &C, fretboardC)
 }
 
 func TestBm(t *testing.T) {
-	testChord(t, Bm, fretboardBm)
+	testChord(t, &Bm, fretboardBm)
 }
 
-func testChord(t *testing.T, c Chord, expectedOutput []string) {
+func testChord(t *testing.T, c *Chord, expectedOutput []string) {
 	std := os.Stdout
 	r, w, _ := os.Pipe()
 	os.Stdout = w

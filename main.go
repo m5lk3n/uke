@@ -60,7 +60,7 @@ type Fretboard struct {
 }
 
 // f must not be a pointer to Fretboard as we don't modify the underlying matrix so that we get a blank board for every print
-func (f Fretboard) printFingers(c Chord, printKey bool) {
+func (f Fretboard) printFingers(c *Chord, printKey bool) {
 	// indicate finger(s) on string(s) in matrix
 	for _, sc := range c.singleChords {
 		stringPos := sc.string * 3
@@ -81,20 +81,20 @@ func (f Fretboard) printFingers(c Chord, printKey bool) {
 
 func main() {
 	f := Fretboard{blankFretboard}
-	f.printFingers(C, true)
-	f.printFingers(Am, false)
-	f.printFingers(F, false)
-	f.printFingers(G, false)
-	f.printFingers(A, false)
-	f.printFingers(Em, false)
-	f.printFingers(D, false)
-	f.printFingers(Dm, false)
-	f.printFingers(E, false)
-	f.printFingers(Gbm, false)
-	f.printFingers(Bm, false)
-	f.printFingers(Cm, false)
-	f.printFingers(Gm, false)
-	f.printFingers(G7, false)
-	f.printFingers(C7, false)
-	f.printFingers(A7, false)
+	f.printFingers(&C, true)
+	f.printFingers(&Am, false)
+	f.printFingers(&F, false)
+	f.printFingers(&G, false)
+	f.printFingers(&A, false)
+	f.printFingers(&Em, false)
+	f.printFingers(&D, false)
+	f.printFingers(&Dm, false)
+	f.printFingers(&E, false)
+	f.printFingers(&Gbm, false)
+	f.printFingers(&Bm, false)
+	f.printFingers(&Cm, false)
+	f.printFingers(&Gm, false)
+	f.printFingers(&G7, false)
+	f.printFingers(&C7, false)
+	f.printFingers(&A7, false)
 }
