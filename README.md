@@ -1,9 +1,17 @@
 # uke
 
+``` test
+$ go test
 ```
+
+``` run
 $ go run uke.go
 ```
 
-## to do
+``` compile
+$ go build
+```
 
-- tests
+# to do
+
+- use pointers in params
