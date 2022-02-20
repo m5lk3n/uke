@@ -1,6 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+	"strings"
+
+	log "github.com/sirupsen/logrus"
+
+	"github.com/gin-gonic/gin"
+)
 
 func replaceAtIndex(s string, i int, r string) string {
 	return s[:i] + r + s[i+1:]
@@ -59,8 +67,8 @@ type Fretboard struct {
 	fretboard fretboardMatrix
 }
 
-// f must not be a pointer to Fretboard as we don't modify the underlying matrix so that we get a blank board for every print
-func (f Fretboard) printFingers(c *Chord, printKey bool) {
+// f must not be a pointer to Fretboard as we don't modify the underlying matrix so that we get a blank board for every call
+func (f Fretboard) setFingers(c *Chord) string {
 	// indicate finger(s) on string(s) in matrix
 	for _, sc := range c.singleChords {
 		stringPos := sc.string * 3
@@ -68,33 +76,109 @@ func (f Fretboard) printFingers(c *Chord, printKey bool) {
 		f.fretboard[fretPos] = replaceAtIndex(f.fretboard[fretPos], stringPos, sc.finger)
 	}
 
-	// print board matrix
+	// return string with newline-separated fretboard where fingers are indicated
+	return strings.Join(f.fretboard[:], "\n")
+}
+
+func (f *Fretboard) getKey() string {
+	k := fmt.Sprintf("%s = index finger, %s = middle finger, %s = ring finger, %s = pinky\n", indexFinger, middleFinger, ringFinger, pinky)
+
+	return k
+}
+
+func (f *Fretboard) printFingers(c *Chord, printKey bool) {
+	// print board matrix, labeled with chord
 	fmt.Println(c.name)
-	for i := 0; i < len(f.fretboard); i++ {
-		fmt.Println(f.fretboard[i])
-	}
+	fmt.Println(f.setFingers(c))
+
 	if printKey {
-		fmt.Printf("%s = index finger, %s = middle finger, %s = ring finger, %s = pinky\n", indexFinger, middleFinger, ringFinger, pinky)
+		fmt.Println(f.getKey())
 	}
+
 	fmt.Println()
 }
 
-func main() {
+// NotFoundHandler to indicate that requested resource could not be found
+func NotFoundHandler(c *gin.Context) {
+	// log this event as it could be an attempt to break in...
+	log.Infoln("Not found, requested URL path:", c.Request.URL.Path)
+	c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "requested resource not found", "status": http.StatusNotFound})
+}
+
+// LivenessHandler always returns HTTP 200
+func LivenessHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "alive", "status": http.StatusOK})
+}
+
+// ReadinessHandler always returns HTTP 200
+func ReadinessHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "ready", "status": http.StatusOK})
+}
+
+// C
+func CHandler(ctx *gin.Context) {
 	f := Fretboard{blankFretboard}
-	f.printFingers(&C, true)
-	f.printFingers(&Am, false)
-	f.printFingers(&F, false)
-	f.printFingers(&G, false)
-	f.printFingers(&A, false)
-	f.printFingers(&Em, false)
-	f.printFingers(&D, false)
-	f.printFingers(&Dm, false)
-	f.printFingers(&E, false)
-	f.printFingers(&Gbm, false)
-	f.printFingers(&Bm, false)
-	f.printFingers(&Cm, false)
-	f.printFingers(&Gm, false)
-	f.printFingers(&G7, false)
-	f.printFingers(&C7, false)
-	f.printFingers(&A7, false)
+	c := f.setFingers(&C)
+
+	accept := ctx.Request.Header.Get("Accept")
+	switch {
+	case strings.Contains(accept, "text/html"):
+		ctx.HTML(http.StatusOK, "index.tmpl", gin.H{"title": "UkeAPI", "chord": "C", "fretboard": c})
+	case strings.Contains(accept, "json"):
+		ctx.JSON(http.StatusOK, gin.H{"chord": "C", "fretboard": c, "status": http.StatusOK})
+	default:
+		ctx.Data(http.StatusOK, "application/text; charset=utf-8", []byte(c))
+	}
+}
+
+// SetupRouter is published here to allow setup of tests
+func SetupRouter() *gin.Engine {
+	router := gin.Default()
+	router.SetTrustedProxies(nil) // https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies
+
+	// to debug: router.Use(gindump.Dump())
+
+	router.Use(gin.Recovery()) // "recover from any panics", write 500 if any
+
+	router.LoadHTMLGlob("templates/*")
+	//	router.Use(static.Serve("/", static.LocalFile("./static", true)))
+
+	router.NoRoute(NotFoundHandler)
+
+	// public, generic API
+	router.GET("/healthy", LivenessHandler)
+	router.GET("/ready", ReadinessHandler)
+
+	// public, functional API
+	router.GET("/C", CHandler)
+
+	return router
+}
+func main() {
+	/*
+		f := Fretboard{blankFretboard}
+		f.printFingers(&C, true)
+		f.printFingers(&Am, false)
+		f.printFingers(&F, false)
+		f.printFingers(&G, false)
+		f.printFingers(&A, false)
+		f.printFingers(&Em, false)
+		f.printFingers(&D, false)
+		f.printFingers(&Dm, false)
+		f.printFingers(&E, false)
+		f.printFingers(&Gbm, false)
+		f.printFingers(&Bm, false)
+		f.printFingers(&Cm, false)
+		f.printFingers(&Gm, false)
+		f.printFingers(&G7, false)
+		f.printFingers(&C7, false)
+		f.printFingers(&A7, false)
+	*/
+	router := SetupRouter()
+
+	log.Infoln("UkeAPI start...")
+	defer log.Infoln("UkeAPI shutdown!")
+
+	// set port via PORT environment variable
+	router.Run() // default port is 8080
 }

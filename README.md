@@ -18,18 +18,47 @@ C
 1 = index finger, 2 = middle finger, 3 = ring finger, 4 = pinky
 ```
 
-The plan is to make this available via an API.
+## CLI usage
 
-## basic mechanics
-
-``` test
-$ go test
+```
+go build
+./uke # TODO
 ```
 
-``` run
-$ go run uke.go
+## API usage
+
+```
+go run main.go
 ```
 
-``` compile
-$ go build
+### get C chord
+
+- get HTML
+
+Browse to http://localhost:8080/C or
+
 ```
+curl -X GET \
+  -H "Accept: text/html" \
+  "http://localhost:8080/C"
+```
+
+- get JSON
+
+```
+curl -X GET \
+  -H "Accept: application/json" \
+  "http://localhost:8080/C"
+```
+
+- get text
+
+```
+curl localhost:8080/C
+```
+
+## to do
+
+- add support for CLI/API mode
+- map chord to name
+- introduce uke package
