@@ -1,8 +1,8 @@
-# uke
+# ukeapi
 
 **this fun project is work in progress!**
 
-Print basic Ukelele chords like so e.g.:
+Print basic Ukulele chords like so e.g.:
 
 ```
 C
@@ -61,4 +61,4 @@ curl localhost:8080/C
 
 - add support for CLI/API mode
 - map chord to name
-- introduce uke package
+- introduce common package

@@ -5,6 +5,8 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	uke "lttl.dev/ukeapi/uke"
 )
 
 var fretboardC []string = []string{
@@ -38,20 +40,20 @@ var fretboardBm []string = []string{
 }
 
 func TestC(t *testing.T) {
-	testChord(t, &C, fretboardC)
+	testChord(t, &uke.C, fretboardC)
 }
 
 func TestBm(t *testing.T) {
-	testChord(t, &Bm, fretboardBm)
+	testChord(t, &uke.Bm, fretboardBm)
 }
 
-func testChord(t *testing.T, c *Chord, expectedOutput []string) {
+func testChord(t *testing.T, c *uke.Chord, expectedOutput []string) {
 	std := os.Stdout
 	r, w, _ := os.Pipe()
 	os.Stdout = w
 
-	f := Fretboard{blankFretboard}
-	f.printFingers(c, false) // this std output gets captured
+	f := uke.Fretboard{Fretboard: uke.BlankFretboard}
+	f.PrintFingers(c, false) // this std output gets captured
 
 	w.Close()
 	captured, _ := ioutil.ReadAll(r)

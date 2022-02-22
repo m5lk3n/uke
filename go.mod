@@ -1,4 +1,4 @@
-module lttl.dev/uke
+module lttl.dev/ukeapi
 
 go 1.17
 
