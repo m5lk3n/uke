@@ -60,5 +60,8 @@ curl localhost:8080/C
 ## to do
 
 - add support for CLI/API mode
-- map chord to name
-- introduce common package
+- clean up uke interface
+- support key
+- add "not found" test
+- add favicon
+- add supported keys

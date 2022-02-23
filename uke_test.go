@@ -40,20 +40,20 @@ var fretboardBm []string = []string{
 }
 
 func TestC(t *testing.T) {
-	testChord(t, &uke.C, fretboardC)
+	testChord(t, "C", fretboardC)
 }
 
 func TestBm(t *testing.T) {
-	testChord(t, &uke.Bm, fretboardBm)
+	testChord(t, "Bm", fretboardBm)
 }
 
-func testChord(t *testing.T, c *uke.Chord, expectedOutput []string) {
+func testChord(t *testing.T, s string, expectedOutput []string) {
 	std := os.Stdout
 	r, w, _ := os.Pipe()
 	os.Stdout = w
 
 	f := uke.Fretboard{Fretboard: uke.BlankFretboard}
-	f.PrintFingers(c, false) // this std output gets captured
+	f.PrintFingers(s, false) // this std output gets captured
 
 	w.Close()
 	captured, _ := ioutil.ReadAll(r)
