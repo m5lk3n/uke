@@ -2,6 +2,7 @@ package uke
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	common "lttl.dev/ukeapi/common"
@@ -95,4 +96,15 @@ func (f *Fretboard) PrintFingers(s string, printKey bool) {
 	}
 
 	fmt.Println()
+}
+
+// GetChordNames returns a string with newline-separated chord names that are supported
+func GetChordNames() string {
+	chordNames := make([]string, 0, len(m))
+	for k := range m {
+		chordNames = append(chordNames, k)
+	}
+	sort.Strings(chordNames)
+
+	return strings.Join(chordNames, "\n")
 }

@@ -64,4 +64,3 @@ curl localhost:8080/C
 - support key
 - add "not found" test
 - add favicon
-- add supported keys

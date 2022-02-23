@@ -38,11 +38,26 @@ func ChordHandler(c *gin.Context) {
 	accept := c.Request.Header.Get("Accept")
 	switch {
 	case strings.Contains(accept, "text/html"):
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{"title": "UkeAPI", "chord": chord, "fretboard": ff})
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{"title": "UkeAPI", "label": chord, "content": ff})
 	case strings.Contains(accept, "json"):
 		c.JSON(http.StatusOK, gin.H{"chord": chord, "fretboard": ff, "status": http.StatusOK})
 	default:
 		c.Data(http.StatusOK, "application/text; charset=utf-8", []byte(ff))
+	}
+}
+
+// ChordNamesHandler prints the supported chord names
+func ChordNamesHandler(c *gin.Context) {
+	cn := uke.GetChordNames()
+
+	accept := c.Request.Header.Get("Accept")
+	switch {
+	case strings.Contains(accept, "text/html"):
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{"title": "UkeAPI", "label": "Supported Chords", "content": cn})
+	case strings.Contains(accept, "json"):
+		c.JSON(http.StatusOK, gin.H{"chord": "Supported Chords", "fretboard": cn, "status": http.StatusOK})
+	default:
+		c.Data(http.StatusOK, "application/text; charset=utf-8", []byte(cn))
 	}
 }
 
@@ -66,6 +81,7 @@ func SetupRouter() *gin.Engine {
 
 	// public, functional API
 	router.GET("/:chord", ChordHandler)
+	router.GET("/chordNames", ChordNamesHandler)
 
 	return router
 }
