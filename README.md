@@ -1,6 +1,6 @@
 # UkeAPI
 
-**this fun project is work in progress!**
+**This fun project is work in progress!**
 
 Print basic Ukulele chords like so e.g.:
 
@@ -43,7 +43,7 @@ go run main.go -serve
 
 ### get C chord
 
-- get HTML
+- Get HTML
 
 Browse to http://localhost:8080/C or
 
@@ -53,7 +53,7 @@ curl -X GET \
   "http://localhost:8080/C"
 ```
 
-- get JSON
+- Get JSON
 
 ```
 curl -X GET \
@@ -61,17 +61,16 @@ curl -X GET \
   "http://localhost:8080/C"
 ```
 
-- get text
+- Get text
 
 ```
 curl localhost:8080/C
 ```
 
-## to do
+## To do
 
-- clean up uke interface
-- support key in interface
-- document/Swagger
-- add LICENSE
-- add Makefile?
-- host?
+- Clean up uke interface
+- Support key in interface
+- Document/Swagger
+- Add Makefile?
+- Host?
