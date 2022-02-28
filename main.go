@@ -8,6 +8,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
@@ -71,7 +72,7 @@ func SetupRouter() *gin.Engine {
 	router.Use(gin.Recovery()) // "recover from any panics", write 500 if any
 
 	router.LoadHTMLGlob("templates/*")
-	// router.Use(static.Serve("/", static.LocalFile("./static", true)))
+	router.Use(static.Serve("/", static.LocalFile("./static", true)))
 
 	router.NoRoute(NotFoundHandler)
 

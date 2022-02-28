@@ -39,6 +39,25 @@ var fretboardBm []string = []string{
 	"",
 }
 
+var fretboardEmpty []string = []string{
+	"NA",
+	"+==+==+==+",
+	"|  |  |  |",
+	"+--+--+--+",
+	"|  |  |  |",
+	"+--+--+--+",
+	"|  |  |  |",
+	"+--+--+--+",
+	"|  |  |  |",
+	"+--+--+--+",
+	"",
+	"",
+}
+
+func TestNotFound(t *testing.T) {
+	testChord(t, "NA", fretboardEmpty)
+}
+
 func TestC(t *testing.T) {
 	testChord(t, "C", fretboardC)
 }
