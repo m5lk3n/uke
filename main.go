@@ -1,7 +1,10 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	uke "lttl.dev/ukeapi/uke"
@@ -88,11 +91,23 @@ func SetupRouter() *gin.Engine {
 }
 
 func main() {
-	router := SetupRouter()
+	serve := flag.Bool("serve", false, "run in HTTP server mode (false by default)")
+	chord := flag.String("chord", "", "display chord, e.g. C or BM (case-sensitive) (ignored in server mode)")
+	flag.Parse()
 
-	log.Infoln("ukeapi start...")
-	defer log.Infoln("ukeapi shutdown!")
+	if *serve {
+		router := SetupRouter()
 
-	// set port via PORT environment variable
-	router.Run() // default port is 8080
+		log.Infoln("UkeAPI start...")
+		defer log.Infoln("UkeAPI shutdown!")
+
+		// set port via PORT environment variable
+		router.Run() // default port is 8080
+	} else if *chord != "" {
+		f := uke.Fretboard{Fretboard: uke.BlankFretboard}
+		f.PrintFingers(*chord, false)
+	} else {
+		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
+		flag.PrintDefaults()
+	}
 }

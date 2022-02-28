@@ -1,4 +1,4 @@
-# ukeapi
+# UkeAPI
 
 **this fun project is work in progress!**
 
@@ -21,14 +21,24 @@ C
 ## CLI usage
 
 ```
-go build
-./uke # TODO
+go run main.go -chord F
+F
++==+==+==+
+|  |  1  |
++--+--+--+
+2  |  |  |
++--+--+--+
+|  |  |  |
++--+--+--+
+|  |  |  |
++--+--+--+
+
 ```
 
 ## API usage
 
 ```
-go run main.go
+go run main.go -serve
 ```
 
 ### get C chord
@@ -59,9 +69,9 @@ curl localhost:8080/C
 
 ## to do
 
-- add support for CLI/API mode
 - clean up uke interface
 - support key in interface
-- document
+- document/Swagger
 - add LICENSE
 - add Makefile?
+- host?
