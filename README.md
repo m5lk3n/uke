@@ -98,8 +98,4 @@ curl localhost:8080/F/key
 
 - Clean up uke interface
 - Document/Swagger
-
-## Open
-
-- Add Makefile?
-- Host?
+- Host
