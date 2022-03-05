@@ -2,9 +2,12 @@
 
 **This fun project is work in progress!**
 
-Print basic Ukulele chords like so e.g.:
+Print basic Ukulele chords as text, JSON or HTML.
+
+## CLI usage
 
 ```
+go run main.go -chord C
 C
 +==+==+==+
 |  |  |  |
@@ -15,13 +18,11 @@ C
 +--+--+--+
 |  |  |  |
 +--+--+--+
-1 = index finger, 2 = middle finger, 3 = ring finger, 4 = pinky
-```
-
-## CLI usage
 
 ```
-go run main.go -chord F
+
+```
+go run main.go -chord F -key
 F
 +==+==+==+
 |  |  1  |
@@ -32,13 +33,20 @@ F
 +--+--+--+
 |  |  |  |
 +--+--+--+
+1 = index finger, 2 = middle finger, 3 = ring finger, 4 = pinky
 
 ```
 
 ## API usage
 
 ```
+# start local server on port 8080 (default)
 go run main.go -serve
+```
+
+```
+# option: if a different port is needed, start as follows (*adapt examples below accordingly*)
+PORT=8081 go run main.go -serve
 ```
 
 ### Get C chord
@@ -90,5 +98,8 @@ curl localhost:8080/F/key
 
 - Clean up uke interface
 - Document/Swagger
+
+## Open
+
 - Add Makefile?
 - Host?
