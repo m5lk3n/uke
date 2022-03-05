@@ -41,16 +41,24 @@ F
 go run main.go -serve
 ```
 
-### get C chord
+### Get C chord
 
 - Get HTML
 
-Browse to http://localhost:8080/C or
+Browse to e.g. http://localhost:8080/C or http://localhost:8080/F/key
+
+or
 
 ```
 curl -X GET \
   -H "Accept: text/html" \
   "http://localhost:8080/C"
+```
+
+```
+curl -X GET \
+  -H "Accept: text/html" \
+  "http://localhost:8080/F/key"
 ```
 
 - Get JSON
@@ -61,16 +69,26 @@ curl -X GET \
   "http://localhost:8080/C"
 ```
 
+```
+curl -X GET \
+  -H "Accept: application/json" \
+  "http://localhost:8080/F/key"
+```
+
+
 - Get text
 
 ```
 curl localhost:8080/C
 ```
 
+```
+curl localhost:8080/F/key
+```
+
 ## To do
 
 - Clean up uke interface
-- Support key in interface
 - Document/Swagger
 - Add Makefile?
 - Host?

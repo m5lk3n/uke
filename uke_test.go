@@ -9,6 +9,21 @@ import (
 	uke "lttl.dev/ukeapi/uke"
 )
 
+var fretboardEmpty []string = []string{
+	"NA",
+	"+==+==+==+",
+	"|  |  |  |",
+	"+--+--+--+",
+	"|  |  |  |",
+	"+--+--+--+",
+	"|  |  |  |",
+	"+--+--+--+",
+	"|  |  |  |",
+	"+--+--+--+",
+	"",
+	"",
+}
+
 var fretboardC []string = []string{
 	"C",
 	"+==+==+==+",
@@ -39,40 +54,46 @@ var fretboardBm []string = []string{
 	"",
 }
 
-var fretboardEmpty []string = []string{
-	"NA",
+var fretboardFKey []string = []string{
+	"F",
 	"+==+==+==+",
-	"|  |  |  |",
+	"|  |  1  |",
+	"+--+--+--+",
+	"2  |  |  |",
 	"+--+--+--+",
 	"|  |  |  |",
 	"+--+--+--+",
 	"|  |  |  |",
 	"+--+--+--+",
-	"|  |  |  |",
-	"+--+--+--+",
+	"1 = index finger, 2 = middle finger, 3 = ring finger, 4 = pinky",
+	"",
 	"",
 	"",
 }
 
 func TestNotFound(t *testing.T) {
-	testChord(t, "NA", fretboardEmpty)
+	testChord(t, "NA", false, fretboardEmpty)
 }
 
 func TestC(t *testing.T) {
-	testChord(t, "C", fretboardC)
+	testChord(t, "C", false, fretboardC)
 }
 
 func TestBm(t *testing.T) {
-	testChord(t, "Bm", fretboardBm)
+	testChord(t, "Bm", false, fretboardBm)
 }
 
-func testChord(t *testing.T, s string, expectedOutput []string) {
+func TestFKey(t *testing.T) {
+	testChord(t, "F", true, fretboardFKey)
+}
+
+func testChord(t *testing.T, s string, k bool, expectedOutput []string) {
 	std := os.Stdout
 	r, w, _ := os.Pipe()
 	os.Stdout = w
 
 	f := uke.Fretboard{Fretboard: uke.BlankFretboard}
-	f.PrintFingers(s, false) // this std output gets captured
+	f.PrintFingers(s, k) // this std output gets captured
 
 	w.Close()
 	captured, _ := ioutil.ReadAll(r)

@@ -35,18 +35,24 @@ func ReadinessHandler(c *gin.Context) {
 // ChordHandler prints the fretboard with the chord indicated (if chord is found)
 func ChordHandler(c *gin.Context) {
 	chord := c.Param("chord")
+	key := c.Param("key")
 
 	f := uke.Fretboard{Fretboard: uke.BlankFretboard}
 	ff := f.SetFingers(chord)
+	var k string
+	if strings.EqualFold(key, "/key") {
+		k = f.GetKey()
+	}
 
 	accept := c.Request.Header.Get("Accept")
 	switch {
 	case strings.Contains(accept, "text/html"):
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{"title": "UkeAPI", "label": chord, "content": ff})
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{"title": "UkeAPI", "label": chord, "content": ff, "key": k})
 	case strings.Contains(accept, "json"):
-		c.JSON(http.StatusOK, gin.H{"chord": chord, "fretboard": ff, "status": http.StatusOK})
+		c.JSON(http.StatusOK, gin.H{"chord": chord, "fretboard": ff, "key": k, "status": http.StatusOK})
 	default:
-		c.Data(http.StatusOK, "application/text; charset=utf-8", []byte(ff))
+		text := fmt.Sprintf("%s\n%s\n%s", chord, ff, k)
+		c.Data(http.StatusOK, "application/text; charset=utf-8", []byte(text))
 	}
 }
 
@@ -85,6 +91,7 @@ func SetupRouter() *gin.Engine {
 
 	// public, functional API
 	router.GET("/:chord", ChordHandler)
+	router.GET("/:chord/*key", ChordHandler)
 	router.GET("/chordNames", ChordNamesHandler)
 
 	return router
@@ -93,19 +100,20 @@ func SetupRouter() *gin.Engine {
 func main() {
 	serve := flag.Bool("serve", false, "run in HTTP server mode (false by default)")
 	chord := flag.String("chord", "", "display chord, e.g. C or BM (case-sensitive) (ignored in server mode)")
+	key := flag.Bool("key", false, "show key (false by default)")
 	flag.Parse()
 
 	if *serve {
 		router := SetupRouter()
 
-		log.Infoln("UkeAPI start...")
+		log.Infoln("UkeAPI starting...")
 		defer log.Infoln("UkeAPI shutdown!")
 
 		// set port via PORT environment variable
 		router.Run() // default port is 8080
 	} else if *chord != "" {
 		f := uke.Fretboard{Fretboard: uke.BlankFretboard}
-		f.PrintFingers(*chord, false)
+		f.PrintFingers(*chord, *key)
 	} else {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()

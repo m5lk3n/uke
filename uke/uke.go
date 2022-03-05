@@ -80,7 +80,7 @@ func (f Fretboard) SetFingers(s string) string {
 	return strings.Join(f.Fretboard[:], "\n")
 }
 
-func (f *Fretboard) getKey() string {
+func (f *Fretboard) GetKey() string {
 	k := fmt.Sprintf("%s = index finger, %s = middle finger, %s = ring finger, %s = pinky\n", indexFinger, middleFinger, ringFinger, pinky)
 
 	return k
@@ -92,7 +92,7 @@ func (f *Fretboard) PrintFingers(s string, printKey bool) {
 	fmt.Println(f.SetFingers(s))
 
 	if printKey {
-		fmt.Println(f.getKey())
+		fmt.Println(f.GetKey())
 	}
 
 	fmt.Println()
