@@ -96,6 +96,4 @@ curl localhost:8080/F/key
 
 ## To do
 
-- Clean up uke interface
-- Document/Swagger
 - Host

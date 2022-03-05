@@ -15,24 +15,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// NotFoundHandler to indicate that requested resource could not be found
+// NotFoundHandler indicates that a requested resource could not be found.
 func NotFoundHandler(c *gin.Context) {
 	// log this event as it could be an attempt to break in...
 	log.Infoln("Not found, requested URL path:", c.Request.URL.Path)
 	c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "requested resource not found", "status": http.StatusNotFound})
 }
 
-// LivenessHandler always returns HTTP 200
+// LivenessHandler always returns HTTP 200.
 func LivenessHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "alive", "status": http.StatusOK})
 }
 
-// ReadinessHandler always returns HTTP 200
+// ReadinessHandler always returns HTTP 200.
 func ReadinessHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "ready", "status": http.StatusOK})
 }
 
-// ChordHandler prints the fretboard with the chord indicated (if chord is found)
+// ChordHandler prints the fretboard with the chord indicated (if chord is
+// found).
 func ChordHandler(c *gin.Context) {
 	chord := c.Param("chord")
 	key := c.Param("key")
@@ -56,7 +57,7 @@ func ChordHandler(c *gin.Context) {
 	}
 }
 
-// ChordNamesHandler prints the supported chord names
+// ChordNamesHandler prints the supported chord names.
 func ChordNamesHandler(c *gin.Context) {
 	cn := uke.GetChordNames()
 
@@ -71,7 +72,7 @@ func ChordNamesHandler(c *gin.Context) {
 	}
 }
 
-// SetupRouter is published here to allow setup of tests
+// SetupRouter is published to allow setup of tests.
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
 	router.SetTrustedProxies(nil) // https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies

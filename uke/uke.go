@@ -1,3 +1,5 @@
+// Package uke provides primitives for indicating and printing fingers for
+// chords on a Ukulele's fretboard.
 package uke
 
 import (
@@ -49,6 +51,7 @@ func init() {
 
 type fretboardMatrix [9]string
 
+// BlankFretboard is the empty fretboard.
 var BlankFretboard fretboardMatrix = fretboardMatrix{
 	"+==+==+==+",
 	"|  |  |  |",
@@ -61,12 +64,13 @@ var BlankFretboard fretboardMatrix = fretboardMatrix{
 	"+--+--+--+",
 }
 
+// Fretboard is a type for a fixed-size string matrix.
 type Fretboard struct {
 	Fretboard fretboardMatrix
 }
 
-// f must not be a pointer to Fretboard as we don't modify the underlying matrix so that we get a blank board for every call
-func (f Fretboard) SetFingers(s string) string {
+// SetFingers indicates the fingers for the given chord on an empty fretboard.
+func (f Fretboard) SetFingers(s string) string { // f must not be a pointer to Fretboard as we don't modify the underlying matrix so that we get a blank board for every call
 	if c, ok := m[s]; ok {
 		// indicate finger(s) on string(s) in matrix
 		for _, sc := range c.singleChords {
@@ -80,12 +84,15 @@ func (f Fretboard) SetFingers(s string) string {
 	return strings.Join(f.Fretboard[:], "\n")
 }
 
+// GetKey simply returns the key.
 func (f *Fretboard) GetKey() string {
 	k := fmt.Sprintf("%s = index finger, %s = middle finger, %s = ring finger, %s = pinky\n", indexFinger, middleFinger, ringFinger, pinky)
 
 	return k
 }
 
+// PrintFingers prints fingers for chords on the fretboard. Key printing is
+// optional.
 func (f *Fretboard) PrintFingers(s string, printKey bool) {
 	// print board matrix, labeled with chord
 	fmt.Println(s)
@@ -98,7 +105,8 @@ func (f *Fretboard) PrintFingers(s string, printKey bool) {
 	fmt.Println()
 }
 
-// GetChordNames returns a string with newline-separated chord names that are supported
+// GetChordNames returns a string with newline-separated chord names that are
+// supported.
 func GetChordNames() string {
 	chordNames := make([]string, 0, len(m))
 	for k := range m {
