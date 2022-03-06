@@ -1,7 +1,5 @@
 # UkeAPI
 
-**This fun project is work in progress!**
-
 Print basic Ukulele chords as text, JSON or HTML.
 
 ## CLI usage
@@ -53,20 +51,20 @@ PORT=8081 go run main.go -serve
 
 - Get HTML
 
-Browse to e.g. http://localhost:8080/C or http://localhost:8080/F/key
+Browse to e.g. http://localhost:8080/api/v1/C or http://localhost:8080/api/v1/F/key
 
 or
 
 ```
 curl -X GET \
   -H "Accept: text/html" \
-  "http://localhost:8080/C"
+  "http://localhost:8080/api/v1/C"
 ```
 
 ```
 curl -X GET \
   -H "Accept: text/html" \
-  "http://localhost:8080/F/key"
+  "http://localhost:8080/api/v1/F/key"
 ```
 
 - Get JSON
@@ -74,26 +72,27 @@ curl -X GET \
 ```
 curl -X GET \
   -H "Accept: application/json" \
-  "http://localhost:8080/C"
+  "http://localhost:8080/api/v1/C"
 ```
 
 ```
 curl -X GET \
   -H "Accept: application/json" \
-  "http://localhost:8080/F/key"
+  "http://localhost:8080/api/v1/F/key"
 ```
 
 
 - Get text
 
 ```
-curl localhost:8080/C
+curl localhost:8080/api/v1/C
 ```
 
 ```
-curl localhost:8080/F/key
+curl localhost:8080/api/v1/F/key
 ```
 
 ## To do
 
 - Host
+- Support sequence of chords, e.g. AmGC

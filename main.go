@@ -86,14 +86,17 @@ func SetupRouter() *gin.Engine {
 
 	router.NoRoute(NotFoundHandler)
 
-	// public, generic API
-	router.GET("/healthy", LivenessHandler)
-	router.GET("/ready", ReadinessHandler)
+	v1 := router.Group("/api/v1")
+	{
+		// public, generic API
+		v1.GET("/healthy", LivenessHandler)
+		v1.GET("/ready", ReadinessHandler)
 
-	// public, functional API
-	router.GET("/:chord", ChordHandler)
-	router.GET("/:chord/*key", ChordHandler)
-	router.GET("/chordNames", ChordNamesHandler)
+		// public, functional API
+		v1.GET("/:chord", ChordHandler)
+		v1.GET("/:chord/*key", ChordHandler)
+		v1.GET("/chordNames", ChordNamesHandler)
+	}
 
 	return router
 }

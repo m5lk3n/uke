@@ -9,7 +9,7 @@ help:
 	@echo "    clean       to delete a compiled binary (if any)"
 	@echo "    get         to fetch all package dependencies"
 	@echo "    test        to run all tests"
-	@echo "    build       to compile binary for local machine architecture"
+	@echo "    build       to compile binary for linux amd64 architecture"
 	@echo "    all         to run all targets but init"
 	@echo
 	@echo "    help        to show this text"
@@ -32,7 +32,7 @@ test:
 
 .PHONY: build
 build:
-	go build
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build
 
 .PHONY: all
 all: clean get test build
