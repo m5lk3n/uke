@@ -35,24 +35,32 @@ func ReadinessHandler(c *gin.Context) {
 // ChordHandler prints the fretboard with the chord indicated (if chord is
 // found).
 func ChordHandler(c *gin.Context) {
-	chord := c.Param("chord")
-	key := c.Param("key")
+	chordParam := c.Param("chord")
+	keyParam := c.Param("key")
 
-	f := uke.Fretboard{Fretboard: uke.BlankFretboard}
-	ff := f.SetFingers(chord)
+	var f uke.Fretboard
+	var sb strings.Builder
+	chords := strings.Split(chordParam, "-")
+	for _, chord := range chords {
+		f = uke.Fretboard{Fretboard: uke.BlankFretboard}
+		ff := f.SetFingers(chord)
+		sb.WriteString(ff)
+		sb.WriteString("\n")
+	}
+
 	var k string
-	if strings.EqualFold(key, "/key") {
+	if strings.EqualFold(keyParam, "/key") {
 		k = f.GetKey()
 	}
 
 	accept := c.Request.Header.Get("Accept")
 	switch {
 	case strings.Contains(accept, "text/html"):
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{"title": "UkeAPI", "label": chord, "content": ff, "key": k})
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{"title": "UkeAPI", "label": chordParam, "content": sb.String(), "key": k})
 	case strings.Contains(accept, "json"):
-		c.JSON(http.StatusOK, gin.H{"chord": chord, "fretboard": ff, "key": k, "status": http.StatusOK})
+		c.JSON(http.StatusOK, gin.H{"chord": chordParam, "fretboard": sb.String(), "key": k, "status": http.StatusOK})
 	default:
-		text := fmt.Sprintf("%s\n%s\n%s", chord, ff, k)
+		text := fmt.Sprintf("%s\n%s\n%s", chordParam, sb.String(), k)
 		c.Data(http.StatusOK, "application/text; charset=utf-8", []byte(text))
 	}
 }
@@ -103,7 +111,7 @@ func SetupRouter() *gin.Engine {
 
 func main() {
 	serve := flag.Bool("serve", false, "run in HTTP server mode (false by default)")
-	chord := flag.String("chord", "", "display chord, e.g. C or BM (case-sensitive) (ignored in server mode)")
+	chord := flag.String("chord", "", "display single chord, e.g. C or BM (case-sensitive) (ignored in server mode)")
 	key := flag.Bool("key", false, "show key (false by default)")
 	flag.Parse()
 

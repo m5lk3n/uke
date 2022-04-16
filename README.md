@@ -4,6 +4,8 @@ Print basic Ukulele chords as text, JSON or HTML.
 
 ## CLI usage
 
+With the CLI version, you can get a single chord with an optional key.
+
 ```
 go run main.go -chord C
 C
@@ -37,6 +39,8 @@ F
 
 ## API usage
 
+With the API version, you can get a single chord or multiple chords, both with an optional key.
+
 ```
 # start local server on port 8080 (default)
 go run main.go -serve
@@ -47,11 +51,11 @@ go run main.go -serve
 PORT=8081 go run main.go -serve
 ```
 
-### Get C chord
+### Get chord(s)
 
 - Get HTML
 
-Browse to e.g. http://localhost:8080/api/v1/C or http://localhost:8080/api/v1/F/key
+Browse to e.g. http://localhost:8080/api/v1/C or http://localhost:8080/api/v1/F/key or http://localhost:8080/api/v1/C-Am-G
 
 or
 
@@ -65,6 +69,12 @@ curl -X GET \
 curl -X GET \
   -H "Accept: text/html" \
   "http://localhost:8080/api/v1/F/key"
+```
+
+```
+curl -X GET \
+  -H "Accept: text/html" \
+  "http://localhost:8080/api/v1/C-Am-G"
 ```
 
 - Get JSON
@@ -81,7 +91,6 @@ curl -X GET \
   "http://localhost:8080/api/v1/F/key"
 ```
 
-
 - Get text
 
 ```
@@ -95,4 +104,3 @@ curl localhost:8080/api/v1/F/key
 ## To do
 
 - Host
-- Support sequence of chords, e.g. AmGC
