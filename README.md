@@ -91,6 +91,12 @@ curl -X GET \
   "http://localhost:8080/api/v1/F/key"
 ```
 
+```
+curl -X GET \
+  -H "Accept: application/json" \
+  "http://localhost:8080/api/v1/C-Am-G"
+```
+
 - Get text
 
 ```
@@ -101,6 +107,11 @@ curl localhost:8080/api/v1/C
 curl localhost:8080/api/v1/F/key
 ```
 
+```
+curl localhost:8080/api/v1/C-Am-G
+```
+
 ## To do
 
 - Host
+- Improve support for multiple chords (vertical output, name per chord)
