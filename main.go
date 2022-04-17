@@ -67,8 +67,10 @@ func ChordsHandler(c *gin.Context) {
 		break
 	case strings.Contains(accept, "json"):
 		c.JSON(http.StatusNotImplemented, gin.H{"message": "requested format not supported", "status": http.StatusNotImplemented})
+		return
 	default:
 		c.Data(http.StatusNotImplemented, "application/text; charset=utf-8", []byte("requested format not supported"))
+		return
 	}
 
 	chordsParam := c.Param("chords")
@@ -146,8 +148,9 @@ func SetupRouter() *gin.Engine {
 
 func main() {
 	serve := flag.Bool("serve", false, "run in HTTP server mode (false by default)")
-	chord := flag.String("chord", "", "display single chord, e.g. C or BM (case-sensitive) (ignored in server mode)")
-	key := flag.Bool("key", false, "show key (false by default)")
+	chord := flag.String("chord", "", "display single chord on fretboard, e.g. C or BM (case-sensitive) (ignored in server mode)")
+	key := flag.Bool("key", false, "show key under fretboard (false by default) (ignored in server mode)")
+	chordNames := flag.Bool("chordNames", false, "show supported chord names (false by default) (ignored in server mode)")
 	flag.Parse()
 
 	if *serve {
@@ -158,9 +161,15 @@ func main() {
 
 		// set port via PORT environment variable
 		router.Run() // default port is 8080
-	} else if *chord != "" {
-		f := uke.Fretboard{Fretboard: uke.BlankFretboard}
-		f.PrintFingers(*chord, *key)
+	} else if *chord != "" || *chordNames {
+		if *chord != "" {
+			f := uke.Fretboard{Fretboard: uke.BlankFretboard}
+			f.PrintFingers(*chord, *key)
+		}
+
+		if *chordNames {
+			fmt.Println(uke.GetChordNames())
+		}
 	} else {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
