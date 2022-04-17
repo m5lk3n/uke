@@ -39,6 +39,7 @@ build:
 deploy: build
     ifdef DEPLOY_TARGET
 		@scp ukeapi $(DEPLOY_TARGET)
+		@scp -r templates/ $(DEPLOY_TARGET)
     else
 		@echo 1>&2 "DEPLOY_TARGET must be set, e.g. DEPLOY_TARGET=user@host:/path make deploy"
     endif

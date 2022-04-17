@@ -15,6 +15,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// VersionHandler always returns HTTP 200.
+func VersionHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "v0.1.0", "status": http.StatusOK}) // TODO: bump when needed
+}
+
 // NotFoundHandler indicates that a requested resource could not be found.
 func NotFoundHandler(c *gin.Context) {
 	// log this event as it could be an attempt to break in...
@@ -129,9 +134,10 @@ func SetupRouter() *gin.Engine {
 
 	router.NoRoute(NotFoundHandler)
 
-	v1 := router.Group("/api/v1")
+	v1 := router.Group("/ukeapi/v1")
 	{
 		// public, generic API
+		v1.GET("/version", VersionHandler)
 		v1.GET("/healthy", LivenessHandler)
 		v1.GET("/ready", ReadinessHandler)
 
