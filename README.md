@@ -53,65 +53,87 @@ PORT=8081 go run main.go -serve
 
 ### Get chord(s)
 
-- Get HTML
+Below are examples of how to query chords. Up to 4 are printed.
 
-Browse to e.g. http://localhost:8080/api/v1/C or http://localhost:8080/api/v1/F/key or http://localhost:8080/api/v1/C-Am-G
+#### Get HTML
+
+Browse to
+- http://localhost:8080/api/v1/chord/C
+- http://localhost:8080/api/v1/chord/F/key
+- http://localhost:8080/api/v1/chords/C-Am-G
+- http://localhost:8080/api/v1/chords/C-Am-G/key
 
 or
 
 ```
 curl -X GET \
   -H "Accept: text/html" \
-  "http://localhost:8080/api/v1/C"
+  "http://localhost:8080/api/v1/chord/C"
 ```
 
 ```
 curl -X GET \
   -H "Accept: text/html" \
-  "http://localhost:8080/api/v1/F/key"
+  "http://localhost:8080/api/v1/chord/F/key"
 ```
 
 ```
 curl -X GET \
   -H "Accept: text/html" \
-  "http://localhost:8080/api/v1/C-Am-G"
-```
-
-- Get JSON
-
-```
-curl -X GET \
-  -H "Accept: application/json" \
-  "http://localhost:8080/api/v1/C"
+  "http://localhost:8080/api/v1/chords/C-Am-G"
 ```
 
 ```
 curl -X GET \
+  -H "Accept: text/html" \
+  "http://localhost:8080/api/v1/chords/C-Am-G/key"
+```
+
+#### Get JSON
+
+```
+curl -X GET \
   -H "Accept: application/json" \
-  "http://localhost:8080/api/v1/F/key"
+  "http://localhost:8080/api/v1/chord/C"
 ```
 
 ```
 curl -X GET \
   -H "Accept: application/json" \
-  "http://localhost:8080/api/v1/C-Am-G"
-```
-
-- Get text
-
-```
-curl localhost:8080/api/v1/C
+  "http://localhost:8080/api/v1/chord/F/key"
 ```
 
 ```
-curl localhost:8080/api/v1/F/key
+curl -X GET \
+  -H "Accept: application/json" \
+  "http://localhost:8080/api/v1/chords/C-Am-G"
 ```
 
 ```
-curl localhost:8080/api/v1/C-Am-G
+curl -X GET \
+  -H "Accept: application/json" \
+  "http://localhost:8080/api/v1/chords/C-Am-G/key"
+```
+
+#### Get text
+
+```
+curl localhost:8080/api/v1/chord/C
+```
+
+```
+curl localhost:8080/api/v1/chord/F/key
+```
+
+```
+curl localhost:8080/api/v1/chords/C-Am-G
+```
+
+```
+curl localhost:8080/api/v1/chords/C-Am-G/key
 ```
 
 ## To do
 
 - Host
-- Improve support for multiple chords (vertical output, name per chord)
+- Support chordNames on CLI, document chordNames

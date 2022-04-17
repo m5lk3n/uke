@@ -38,16 +38,8 @@ func ChordHandler(c *gin.Context) {
 	chordParam := c.Param("chord")
 	keyParam := c.Param("key")
 
-	var f uke.Fretboard
-	var sb strings.Builder
-	chords := strings.Split(chordParam, "-")
-	for _, chord := range chords {
-		f = uke.Fretboard{Fretboard: uke.BlankFretboard}
-		ff := f.SetFingers(chord)
-		sb.WriteString(ff)
-		sb.WriteString("\n")
-	}
-
+	f := uke.Fretboard{Fretboard: uke.BlankFretboard}
+	ff := f.SetFingers(chordParam)
 	var k string
 	if strings.EqualFold(keyParam, "/key") {
 		k = f.GetKey()
@@ -56,13 +48,54 @@ func ChordHandler(c *gin.Context) {
 	accept := c.Request.Header.Get("Accept")
 	switch {
 	case strings.Contains(accept, "text/html"):
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{"title": "UkeAPI", "label": chordParam, "content": sb.String(), "key": k})
+		c.HTML(http.StatusOK, "single.tmpl", gin.H{"title": "UkeAPI", "label": chordParam, "content": ff, "key": k})
 	case strings.Contains(accept, "json"):
-		c.JSON(http.StatusOK, gin.H{"chord": chordParam, "fretboard": sb.String(), "key": k, "status": http.StatusOK})
+		c.JSON(http.StatusOK, gin.H{"chord": chordParam, "fretboard": ff, "key": k, "status": http.StatusOK})
 	default:
-		text := fmt.Sprintf("%s\n%s\n%s", chordParam, sb.String(), k)
+		text := fmt.Sprintf("%s\n%s\n%s", chordParam, ff, k)
 		c.Data(http.StatusOK, "application/text; charset=utf-8", []byte(text))
 	}
+}
+
+// ChordsHandler prints the fretboard with up to 4 chord(s) indicated (if chord
+// is found). Supported output format is HTML only, any other will return "not
+// implemented/supported".
+func ChordsHandler(c *gin.Context) {
+	accept := c.Request.Header.Get("Accept")
+	switch {
+	case strings.Contains(accept, "text/html"):
+		break
+	case strings.Contains(accept, "json"):
+		c.JSON(http.StatusNotImplemented, gin.H{"message": "requested format not supported", "status": http.StatusNotImplemented})
+	default:
+		c.Data(http.StatusNotImplemented, "application/text; charset=utf-8", []byte("requested format not supported"))
+	}
+
+	chordsParam := c.Param("chords")
+	keyParam := c.Param("key")
+
+	const max = 4 // some arbitrary upper bound for fretboards with chords to display next to each other, goes along with label and content entries in multi.tmpl
+	l := make([]string, max)
+	b := make([]string, max)
+	var f uke.Fretboard
+	chords := strings.Split(chordsParam, "-")
+	for i, chord := range chords {
+		if i == max {
+			break
+		}
+
+		f = uke.Fretboard{Fretboard: uke.BlankFretboard}
+		ff := f.SetFingers(chord)
+		l[i] = chord
+		b[i] = ff
+	}
+
+	var k string
+	if strings.EqualFold(keyParam, "/key") {
+		k = f.GetKey()
+	}
+
+	c.HTML(http.StatusOK, "multi.tmpl", gin.H{"title": "UkeAPI", "label0": l[0], "content0": b[0], "label1": l[1], "content1": b[1], "label2": l[2], "content2": b[2], "label3": l[3], "content3": b[3], "key": k})
 }
 
 // ChordNamesHandler prints the supported chord names.
@@ -72,7 +105,7 @@ func ChordNamesHandler(c *gin.Context) {
 	accept := c.Request.Header.Get("Accept")
 	switch {
 	case strings.Contains(accept, "text/html"):
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{"title": "UkeAPI", "label": "Supported Chords", "content": cn})
+		c.HTML(http.StatusOK, "single.tmpl", gin.H{"title": "UkeAPI", "label": "Supported Chords", "content": cn})
 	case strings.Contains(accept, "json"):
 		c.JSON(http.StatusOK, gin.H{"chord": "Supported Chords", "fretboard": cn, "status": http.StatusOK})
 	default:
@@ -101,8 +134,10 @@ func SetupRouter() *gin.Engine {
 		v1.GET("/ready", ReadinessHandler)
 
 		// public, functional API
-		v1.GET("/:chord", ChordHandler)
-		v1.GET("/:chord/*key", ChordHandler)
+		v1.GET("/chord/:chord", ChordHandler)
+		v1.GET("/chord/:chord/*key", ChordHandler)
+		v1.GET("/chords/:chords", ChordsHandler)
+		v1.GET("/chords/:chords/*key", ChordsHandler)
 		v1.GET("/chordNames", ChordNamesHandler)
 	}
 
